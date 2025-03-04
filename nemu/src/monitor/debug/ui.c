@@ -87,6 +87,19 @@ static int cmd_info(char *args) {
   return 0;
 }
 
+static int cmd_p(char* args) {
+  char* expression = strtok(args, " ");
+  bool isSuccess = true;
+  int value = expr(expression, &isSuccess);
+  if(isSuccess) {
+    printf("ans = 0x%08x\n", value);
+  }
+  else {
+    printf("error in expression!\n");
+  }
+  return 0;
+}
+
 static struct {
   char *name;
   char *description;
@@ -100,7 +113,7 @@ static struct {
 
   { "si", "Step to the next [N] instruction", cmd_si},
   { "info", "Print information of regs using 'r' or watchpoint using 'w'", cmd_info},
-
+  { "p", "Calculate the input of experssion: <p expr>", cmd_p},
 };
 
 #define NR_CMD (sizeof(cmd_table) / sizeof(cmd_table[0]))
