@@ -20,4 +20,9 @@ void init_wp_pool() {
 
 /* TODO: Implement the functionality of watchpoint */
 
-
+void print_wp(){
+  for(WP* i = head;i != NULL; i = i->next) {
+    printf("Watchpoint %d : %s\n", i->NO, i->expr);
+  }
+  return;
+}

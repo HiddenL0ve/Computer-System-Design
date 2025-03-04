@@ -54,6 +54,40 @@ static int cmd_si(char *args) {
   return 0;
 }
 
+static int cmd_info(char *args) {
+  char s = args[0];
+
+  if(s == 'w') {
+    print_wp();
+    return 0;
+  }
+
+  if(s == 'r') {
+    //32bit
+    for(int i = 0; i < 8; i++) {
+      printf("%s  0x%x\n", regsl[i], reg_l(i));
+    }
+    printf("eip  0x%x\n", cpu.eip);
+    //16bit
+    for(int i = 0; i < 8; i++) {
+      printf("%s  0x%x\n", regsw[i], reg_w(i));
+    }
+    //8bit
+    for(int i = 0; i < 8; i++)
+    {
+      printf("%s  0x%x\n", regsb[i], reg_b(i));
+    }
+    // printf("eflags:CF=%x,ZF=%x,SF=%x,IF=%x,OF=%x\n",cpu.eflags.CF,cpu.eflags.ZF,cpu.eflags.SF,cpu.eflags.IF,cpu.eflags.OF);
+    // printf("CR0=0x%x CR3=0x%x\n", cpu.CR0,cpu.CR3);
+    return 0;
+  }
+  else {
+    printf("args error in cmd_info\n");
+    return 0;
+  }
+  return 0;
+}
+
 static struct {
   char *name;
   char *description;
@@ -66,6 +100,7 @@ static struct {
   /* TODO: Add more commands */
 
   { "si", "Step to the next [N] instruction", cmd_si},
+  { "info", "Print information of regs using 'r' or watchpoint using 'w'", cmd_info},
 
 };
 
