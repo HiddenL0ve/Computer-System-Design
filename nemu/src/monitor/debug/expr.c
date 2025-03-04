@@ -98,12 +98,31 @@ static bool make_token(char *e) {
          * to record the token in the array `tokens'. For certain types
          * of tokens, some extra actions should be performed.
          */
-
-        switch (rules[i].token_type) {
-          default: TODO();
+        if(substr_len > 32) {
+          assert(0);
         }
-
-        break;
+        if(rules[i].token_type == TK_NOTYPE) {
+          break;
+        }
+        else {
+          tokens[nr_token].type = rules[i].token_type;
+          switch (rules[i].token_type) {
+          case TK_NUMBER:
+            strncpy(tokens[nr_token].str, substr_start, substr_len);
+            *(tokens[nr_token].str + substr_len) = '\0';
+            break;
+          case TK_HEX:
+            strncpy(tokens[nr_token].str, substr_start + 2, substr_len - 2);
+            *(tokens[nr_token].str + substr_len - 2) = '\0';
+            break;
+          case TK_REG: 
+            strncpy(tokens[nr_token].str, substr_start + 1, substr_len - 1);
+            *(tokens[nr_token].str + substr_len - 1) = '\0';
+          }
+          printf("Success record : nr_token = %d, dtype = %d, str = %s\n", nr_token, tokens[nr_token].type, tokens[nr_token].str);
+          nr_token += 1;
+          break;
+        }
       }
     }
 
