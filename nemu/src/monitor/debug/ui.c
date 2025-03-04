@@ -39,18 +39,17 @@ static int cmd_q(char *args) {
 static int cmd_help(char *args);
 
 static int cmd_si(char *args) {
-  uint64_t N = 0;
   if(args == NULL) {
-    N = 1;
+    cpu_exec(1);;
   }
   else {
-    int temp = sscanf(args, "%llu", &N);
-    if(temp <= 0) {
+    int N = atoi(args);
+    if(N <= 0) {
       printf("args error in cmd_si\n");
       return 0;
     }
+    cpu_exec(N);
   }
-  cpu_exec(N);
   return 0;
 }
 
