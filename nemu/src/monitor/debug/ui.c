@@ -92,7 +92,7 @@ static int cmd_p(char* args) {
   bool isSuccess = true;
   int value = expr(expression, &isSuccess);
   if(isSuccess) {
-    printf("ans = 0x%08x\n", value);
+    printf("value = %d\n", value);
   }
   else {
     printf("error in expression!\n");
