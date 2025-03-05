@@ -39,6 +39,7 @@ static int cmd_q(char *args) {
 static int cmd_help(char *args);
 
 static int cmd_si(char *args) {
+  printf("%s\n", args);
   if(args == NULL) {
     cpu_exec(1);;
   }
