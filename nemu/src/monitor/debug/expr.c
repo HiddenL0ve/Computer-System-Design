@@ -107,39 +107,34 @@ bool check_parentheses(int p, int q) {
 }
 
 // algorithm priority
-typedef struct {
-  int precedence;
-  int assoc;
-} OpInfo;
-
-OpInfo op_table[] = {
-  {1, 1}, // AND (&&)
-  {1, 1}, // OR (||)
-  {2, 1}, // EQ (==)
-  {2, 1}, // NEQ (!=)
-  {3, 1}, // ADD (+)
-  {3, 1}, // SUB (-)
-  {4, 1}, // MUL (*)
-  {4, 1}, // DIV (/)
-  {5, 0}, // NEGATIVE (-)
-  {5, 0}, // DEREF (*)
-  {5, 0}, // LOGICAL NOT (!)
+int op_table[] = 
+{1, // AND (&&)
+  1, // OR (||)
+  2, // EQ (==)
+  2, // NEQ (!=)
+  3, // ADD (+)
+  3, // SUB (-)
+  4, // MUL (*)
+  4, // DIV (/)
+  5, // NEGATIVE (-)
+  5, // DEREF (*)
+  5, // LOGICAL NOT (!)
 };
 
-int get_precedence(int op_type) {
-  switch (op_type) {
-    case TK_AND:      return op_table[0].precedence;
-    case TK_OR:       return op_table[1].precedence;
-    case TK_EQ:       return op_table[2].precedence;
-    case TK_NEQ:      return op_table[3].precedence;
-    case '+':         return op_table[4].precedence;
-    case '-':         return op_table[5].precedence;
-    case '*':         return op_table[6].precedence;
-    case '/':         return op_table[7].precedence;
-    case TK_NEGATIVE: return op_table[8].precedence;
-    case TK_DEREF:    return op_table[9].precedence;
-    case '!':         return op_table[10].precedence;
-    default:          return -1;
+int get_precedence(int op) {
+  switch (op) {
+    case TK_AND:      return op_table[0];
+    case TK_OR:       return op_table[1];
+    case TK_EQ:       return op_table[2];
+    case TK_NEQ:      return op_table[3];
+    case '+':         return op_table[4];
+    case '-':         return op_table[5];
+    case '*':         return op_table[6];
+    case '/':         return op_table[7];
+    case TK_NEGATIVE: return op_table[8];
+    case TK_DEREF:    return op_table[9];
+    case '!':         return op_table[10];
+    default:          return -1; // 错误或未知操作符
   }
 }
 
