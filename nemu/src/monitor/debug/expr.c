@@ -213,13 +213,14 @@ int eval(int p, int q){
   else {
     int op = findDominantOp(p, q);
     vaddr_t addr;
-    int result;
+    int result = 0;
 
     switch (tokens[op].type) {
       case TK_NEGATIVE:
-        printf("Operator= -\n");
+        printf("Operator = -\n");
+        result = eval(p + 1, q);
         printf("Value=%d\n",result);
-        return -eval(p + 1, q);
+        return -result;
       case TK_DEREF:
         addr = eval(p + 1, q);
         result = vaddr_read(addr, 4);
@@ -227,7 +228,7 @@ int eval(int p, int q){
         return result;
       case '!': 
         result = eval(p + 1, q);
-        printf("Operator= !\n");
+        printf("Operator = !\n");
         if(result != 0) {
           printf("Value=0\n");
           return 0;
@@ -242,39 +243,39 @@ int eval(int p, int q){
     int val2 = eval(op + 1, q);
     switch(tokens[op].type) {
       case '+':
-        printf("Operator= +\n");
+        printf("Operator = +\n");
         printf("Value=%d\n",val1+val2);
         return val1 + val2;
       case '-': 
-        printf("Operator= -\n");
+        printf("Operator = -\n");
         printf("Value=%d\n",val1-val2);
         return val1 - val2;
       case '/':
         if(val2==0){
-          printf("Error: The right value can not be 0\n");
+          printf("Error: Division by zero\n");
           assert(0);
         }
-        printf("Operator= /\n");
+        printf("Operator = /\n");
         printf("Value=%d\n",val1/val2);
         return val1 / val2;
       case '*':
-        printf("Operator= *\n");
+        printf("Operator = *\n");
         printf("Value=%d\n",val1*val2);
         return val1 * val2;
       case TK_EQ:
-        printf("Operator= ==\n");
+        printf("Operator = ==\n");
         printf("Value=%d\n",val1==val2);
         return val1 == val2;
       case TK_NEQ: 
-        printf("Operator= !=\n");
+        printf("Operator = !=\n");
         printf("Value=%d\n",val1!=val2);
         return val1 != val2;
       case TK_AND: 
-        printf("Operator= &&\n");
+        printf("Operator = &&\n");
         printf("Value=%d\n",val1&&val2);
         return val1 && val2;
       case TK_OR: 
-        printf("Operator= ||\n");
+        printf("Operator = ||\n");
         printf("Value=%d\n",val1||val2);
         return val1 || val2;
       default:
