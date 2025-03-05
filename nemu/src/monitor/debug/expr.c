@@ -329,7 +329,6 @@ static bool make_token(char *e) {
             strncpy(tokens[nr_token].str, substr_start + 1, substr_len - 1);
             *(tokens[nr_token].str + substr_len - 1) = '\0';
           }
-          printf("Success record : nr_token = %d, dtype = %d, str = %s\n", nr_token, tokens[nr_token].type, tokens[nr_token].str);
           nr_token += 1;
           break;
         }
