@@ -39,7 +39,7 @@ static int cmd_q(char *args) {
 static int cmd_help(char *args);
 
 static int cmd_si(char *args) {
-  printf("%s\n", args);
+  //printf("%s\n", args);
   if(args == NULL) {
     cpu_exec(1);;
   }
@@ -101,6 +101,58 @@ static int cmd_p(char* args) {
   return 0;
 }
 
+static int cmd_x(char *args) {
+  char* arg1 = strtok(args, " ");
+  if(arg1 == NULL) {
+    printf("error args in cmd_si\n");
+  }
+  int N = atoi(arg1);
+
+  char* arg2 = strtok(NULL, " ");
+  if(arg2 == NULL) {
+    printf("error args in cmd_si\n");
+    return 0;
+  }
+
+  bool success = true;
+  int addr = expr(arg2, &success);
+  if(!success) {
+    printf("Illegal Address Expression\n");
+    return 0;
+  }
+  addr = strtoul(arg2, NULL, 16);
+  printf("Memory:");
+  for(int i = 0; i < N; i++) {
+    uint32_t value = paddr_read(addr, 4);
+    printf("0x%x : 0x%08x\n", addr, value);
+    addr += 4;
+  }
+  return 0;
+}
+
+static int cmd_w(char* args) {
+  WP* wp = new_wp();
+  char* arg = strtok(NULL, " ");
+  strcpy(wp->expr, arg);
+  bool success = true;
+  wp->value = expr(arg, &success);
+  if(success){
+    printf("watchpoint %d : %s\n", wp->NO, wp->expr);
+  }
+  else{
+    printf("Illegal Expression\n");
+    free_wp(wp->NO);
+  }
+  return 0;
+}
+
+static int cmd_d(char* args) {
+  char* arg = strtok(NULL, " ");
+  int num = atoi(arg);
+  free_wp(num);
+  return 0;
+}
+
 static struct {
   char *name;
   char *description;
@@ -115,6 +167,9 @@ static struct {
   { "si", "Step to the next [N] instruction", cmd_si},
   { "info", "Print information of regs using 'r' or watchpoint using 'w'", cmd_info},
   { "p", "Calculate the input of experssion: <p expr>", cmd_p},
+  { "x", "Scan the target address of memory and show the value in the address", cmd_x},
+  { "w", "Set watchpoint", cmd_w},
+  { "d", "Delete watchpoint", cmd_d}
 };
 
 #define NR_CMD (sizeof(cmd_table) / sizeof(cmd_table[0]))
