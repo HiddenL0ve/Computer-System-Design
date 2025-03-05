@@ -154,7 +154,7 @@ int findDominantOp(int p, int q) {
       if (level == 0) {
           int precedence = get_precedence(tokens[i].type);
           
-          if (precedence > max_precedence) {
+          if (precedence < max_precedence) {
               max_precedence = precedence;
               dominant_op = i;
           }
