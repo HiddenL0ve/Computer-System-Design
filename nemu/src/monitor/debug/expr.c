@@ -108,17 +108,17 @@ bool check_parentheses(int p, int q) {
 
 // algorithm priority
 int op_table[] = 
-{1, // AND (&&)
-  1, // OR (||)
-  2, // EQ (==)
-  2, // NEQ (!=)
+{5, // AND (&&)
+  5, // OR (||)
+  4, // EQ (==)
+  4, // NEQ (!=)
   3, // ADD (+)
   3, // SUB (-)
-  4, // MUL (*)
-  4, // DIV (/)
-  5, // NEGATIVE (-)
-  5, // DEREF (*)
-  5, // LOGICAL NOT (!)
+  2, // MUL (*)
+  2, // DIV (/)
+  1, // NEGATIVE (-)
+  1, // DEREF (*)
+  1, // LOGICAL NOT (!)
 };
 
 int get_precedence(int op) {
@@ -154,7 +154,7 @@ int findDominantOp(int p, int q) {
       if (level == 0) {
           int precedence = get_precedence(tokens[i].type);
           
-          if (precedence < max_precedence) {
+          if (precedence > max_precedence) {
               max_precedence = precedence;
               dominant_op = i;
           }
