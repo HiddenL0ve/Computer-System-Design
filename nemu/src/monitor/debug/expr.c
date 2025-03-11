@@ -244,11 +244,11 @@ int eval(int p, int q){
     switch(tokens[op].type) {
       case '+':
         printf("Operator = +\n");
-        printf("Value=%d\n",val1+val2);
+        printf("Value = %d\n",val1+val2);
         return val1 + val2;
       case '-': 
         printf("Operator = -\n");
-        printf("Value=%d\n",val1-val2);
+        printf("Value = %d\n",val1-val2);
         return val1 - val2;
       case '/':
         if(val2==0){
@@ -256,27 +256,27 @@ int eval(int p, int q){
           assert(0);
         }
         printf("Operator = /\n");
-        printf("Value=%d\n",val1/val2);
+        printf("Value = %d\n",val1/val2);
         return val1 / val2;
       case '*':
         printf("Operator = *\n");
-        printf("Value=%d\n",val1*val2);
+        printf("Value = %d\n",val1*val2);
         return val1 * val2;
       case TK_EQ:
         printf("Operator = ==\n");
-        printf("Value=%d\n",val1==val2);
+        printf("Value = %d\n",val1==val2);
         return val1 == val2;
       case TK_NEQ: 
         printf("Operator = !=\n");
-        printf("Value=%d\n",val1!=val2);
+        printf("Value = %d\n",val1!=val2);
         return val1 != val2;
       case TK_AND: 
         printf("Operator = &&\n");
-        printf("Value=%d\n",val1&&val2);
+        printf("Value = %d\n",val1&&val2);
         return val1 && val2;
       case TK_OR: 
         printf("Operator = ||\n");
-        printf("Value=%d\n",val1||val2);
+        printf("Value = %d\n",val1||val2);
         return val1 || val2;
       default:
         printf("Error: Invalid operator\n");
