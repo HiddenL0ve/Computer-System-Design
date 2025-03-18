@@ -13,7 +13,7 @@ make_EHelper(operand_size);
 make_EHelper(nemu_trap);
 // make_EHelper(endbr32);
 
-make_EHelper(endbr);
+//make_EHelper(endbr);
 
 make_EHelper(add);
 make_EHelper(inc);
@@ -37,7 +37,7 @@ make_EHelper(sal);
 make_EHelper(shl);
 make_EHelper(shr);
 make_EHelper(sar);
-make_EHelper(rol);
+//make_EHelper(rol);
 make_EHelper(setcc);
 make_EHelper(test);
 
