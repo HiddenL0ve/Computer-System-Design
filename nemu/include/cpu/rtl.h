@@ -205,9 +205,9 @@ static inline void rtl_update_ZF(const rtlreg_t* result, int width) {
 static inline void rtl_update_SF(const rtlreg_t* result, int width) {
   // eflags.SF <- is_sign(result[width * 8 - 1 .. 0])
   // TODO();
-  assert(result != &t0);
-  rtl_msb(&t0, result, width);
-  rtl_set_SF(&t0);
+  uint32_t sf = 0;
+  rtl_msb(&sf, result, width);
+  cpu.eflags.SF = sf;
 }
 
 static inline void rtl_update_ZFSF(const rtlreg_t* result, int width) {
