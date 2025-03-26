@@ -11,7 +11,6 @@ make_EHelper(xor);
 make_EHelper(ret);
 make_EHelper(operand_size);
 make_EHelper(nemu_trap);
-// make_EHelper(endbr32);
 
 make_EHelper(endbr);
 
