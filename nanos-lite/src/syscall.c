@@ -15,6 +15,7 @@ static inline _RegSet* sys_write(_RegSet *r){
   int fd = SYSCALL_ARG2(r);
   void *buf = (void*)SYSCALL_ARG3(r);
   size_t len = SYSCALL_ARG4(r);
+  Log("buffer:%s", (char*)buf);
   if(fd == 1 || fd == 2) {
     for(int i = 0; i < len; i++) {
       _putc(((char*)buf)[i]);
