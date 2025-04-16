@@ -5,6 +5,7 @@ int main() {
   write(1, "Hello World!\n", 13);
   int i = 2;
   volatile int j = 0;
+write(1, "Hello!\n", 13);
 printf("Hello World for the %dth time\n", i ++);
   while (1) {
     j ++;
