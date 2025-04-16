@@ -1,6 +1,9 @@
 #include "common.h"
 #include "syscall.h"
 
+
+extern void _halt(int);
+
 static inline _RegSet* sys_none(_RegSet *r){
   SYSCALL_ARG1(r) = 1;
   return NULL;
