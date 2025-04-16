@@ -14,22 +14,20 @@ static inline _RegSet* sys_exit(_RegSet *r){
   return NULL;
 }
 
-static inline _RegSet* sys_write(_RegSet *r){
-  int fd = SYSCALL_ARG2(r);
-  void *buf = (void*)SYSCALL_ARG3(r);
-  size_t len = SYSCALL_ARG4(r);
-  Log("buffer:%s", (char*)buf);
-  if(fd == 1 || fd == 2) {
-    for(int i = 0; i < len; i++) {
-      _putc(((char*)buf)[i]);
-    }
-    SYSCALL_ARG1(r) = len;
-  }
-  else {
-    panic("Unhandled fd=%d in sys_write()", fd);
-  }
-
-  return NULL;
+int sys_write(int fd, void *buf, size_t len) {
+	if(fd == 1 || fd == 2){
+		char c;
+    // Log("buffer:%s", (char*)buf);
+		for(int i = 0; i < len; i++) {
+			memcpy(&c ,buf + i, 1);
+			_putc(c);
+		}
+		return len;
+	}
+  else{
+    panic("Unhandled fd=%d in sys_write()",fd);
+   }
+	return -1;			
 }
 
 static inline _RegSet* sys_brk(_RegSet *r) {
@@ -40,11 +38,16 @@ static inline _RegSet* sys_brk(_RegSet *r) {
 _RegSet* do_syscall(_RegSet *r) {
   uintptr_t a[4];
   a[0] = SYSCALL_ARG1(r);
+  a[1] = SYSCALL_ARG2(r);
+  a[2] = SYSCALL_ARG3(r);
+  a[3] = SYSCALL_ARG4(r);
 
   switch (a[0]) {
     case SYS_none: return sys_none(r);
     case SYS_exit:return sys_exit(r);
-    case SYS_write:return sys_write(r);
+    case SYS_write:
+      SYSCALL_ARG1(r) = sys_write(a[1], (void*)a[2], a[3]);
+      break;
     case SYS_brk:return sys_brk(r);
     default: panic("Unhandled syscall ID = %d", a[0]);
   }
