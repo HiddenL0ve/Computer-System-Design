@@ -5,11 +5,11 @@ int main() {
   write(1, "Hello World!\n", 13);
   int i = 2;
   volatile int j = 0;
+printf("Hello World for the %dth time\n", i ++);
   while (1) {
     j ++;
     if (j == 10000) {
-printf("1);
-      //printf("Hello World for the %dth time\n", i ++);
+      printf("Hello World for the %dth time\n", i ++);
       j = 0;
     }
   }
