@@ -20,8 +20,10 @@ static inline _RegSet* sys_write(_RegSet *r){
   size_t len = SYSCALL_ARG4(r);
   Log("buffer:%s", (char*)buf);
   if(fd == 1 || fd == 2) {
+    char c;
     for(int i = 0; i < len; i++) {
-      _putc(((char*)buf)[i]);
+      memcpy(&c ,buf + i, 1);
+      _putc(c);
     }
     SYSCALL_ARG1(r) = len;
   }
@@ -32,8 +34,9 @@ static inline _RegSet* sys_write(_RegSet *r){
   return NULL;
 }
 
-int sys_brk(int addr) {
-  return 0;
+static inline _RegSet* sys_brk(_RegSet *r) {
+  SYSCALL_ARG1(r) = 0;
+  return NULL;
 }
 
 _RegSet* do_syscall(_RegSet *r) {
@@ -47,9 +50,7 @@ _RegSet* do_syscall(_RegSet *r) {
     case SYS_none: return sys_none(r);
     case SYS_exit:return sys_exit(r);
     case SYS_write:return sys_write(r);
-    case SYS_brk:
-      SYSCALL_ARG1(r) = sys_brk(a[1]);
-      break;
+    case SYS_brk:return sys_brk(r);
     default: panic("Unhandled syscall ID = %d", a[0]);
   }
 
