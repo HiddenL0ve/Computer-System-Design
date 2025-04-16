@@ -32,9 +32,8 @@ static inline _RegSet* sys_write(_RegSet *r){
   return NULL;
 }
 
-static inline _RegSet* sys_brk(_RegSet *r) {
-  SYSCALL_ARG1(r) = 0;
-  return NULL;
+int sys_brk(int addr) {
+  return 0;
 }
 
 _RegSet* do_syscall(_RegSet *r) {
@@ -48,7 +47,9 @@ _RegSet* do_syscall(_RegSet *r) {
     case SYS_none: return sys_none(r);
     case SYS_exit:return sys_exit(r);
     case SYS_write:return sys_write(r);
-    case SYS_brk:return sys_brk(r);
+    case SYS_brk:
+      SYSCALL_ARG1(r) = sys_brk(a[1]);
+      break;
     default: panic("Unhandled syscall ID = %d", a[0]);
   }
 
