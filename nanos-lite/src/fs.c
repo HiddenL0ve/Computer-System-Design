@@ -24,3 +24,15 @@ static Finfo file_table[] __attribute__((used)) = {
 void init_fs() {
   // TODO: initialize the size of /dev/fb
 }
+
+ssize_t fs_write(int fd, const void *buf, size_t len) {
+	switch(fd) {
+		case FD_STDOUT:
+		case FD_STDERR:
+			for(int i = 0; i < len; i++) {
+				_putc(((char*)buf)[i]);
+			}
+			break;
+	}
+	return len;
+}
