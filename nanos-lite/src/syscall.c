@@ -3,7 +3,6 @@
 
 
 extern void _halt(int);
-extern ssize_t fs_write(int fd, const void *buf, size_t len);
 
 static inline _RegSet* sys_none(_RegSet *r){
   SYSCALL_ARG1(r) = 1;
@@ -16,10 +15,20 @@ static inline _RegSet* sys_exit(_RegSet *r){
 }
 
 static inline _RegSet* sys_write(_RegSet *r){
-  int fd = (int)SYSCALL_ARG2(r);
-  char *buf = (char *)SYSCALL_ARG3(r);
-  int count = (int)SYSCALL_ARG4(r);
-  SYSCALL_ARG1(r) = fs_write(fd,buf,count);
+  int fd = SYSCALL_ARG2(r);
+  void *buf = (void*)SYSCALL_ARG3(r);
+  size_t len = SYSCALL_ARG4(r);
+  Log("buffer:%s", (char*)buf);
+  if(fd == 1 || fd == 2) {
+    for(int i = 0; i < len; i++) {
+      _putc(((char*)buf)[i]);
+    }
+    SYSCALL_ARG1(r) = len;
+  }
+  else {
+    panic("Unhandled fd=%d in sys_write()", fd);
+  }
+
   return NULL;
 }
 
