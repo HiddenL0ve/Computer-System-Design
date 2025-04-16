@@ -34,15 +34,7 @@ extern char _end;
 static intptr_t brk = (intptr_t)&_end;
 
 void *_sbrk(intptr_t increment){
-  extern int end;
-  static uintptr_t probreak = (uintptr_t)&end;
-  uintptr_t probreak_new = probreak + increment;
-  int r = _syscall_(SYS_brk, probreak_new, 0, 0);
-  if(r == 0) {
-    uintptr_t temp = probreak;
-    probreak = probreak_new;
-    return (void*)temp;
-  }
+  
   return (void *)-1;
 }
 
