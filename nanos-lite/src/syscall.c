@@ -20,10 +20,8 @@ static inline _RegSet* sys_write(_RegSet *r){
   size_t len = SYSCALL_ARG4(r);
   Log("buffer:%s", (char*)buf);
   if(fd == 1 || fd == 2) {
-    char c;
     for(int i = 0; i < len; i++) {
-      memcpy(&c ,buf + i, 1);
-      _putc(c);
+      _putc(((char*)buf)[i]);
     }
     SYSCALL_ARG1(r) = len;
   }
@@ -42,10 +40,7 @@ static inline _RegSet* sys_brk(_RegSet *r) {
 _RegSet* do_syscall(_RegSet *r) {
   uintptr_t a[4];
   a[0] = SYSCALL_ARG1(r);
-  a[1] = SYSCALL_ARG2(r);
-  a[2] = SYSCALL_ARG3(r);
-  a[3] = SYSCALL_ARG4(r);
-
+  
   switch (a[0]) {
     case SYS_none: return sys_none(r);
     case SYS_exit:return sys_exit(r);
