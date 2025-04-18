@@ -46,7 +46,6 @@ int fs_open(const char*filename, int flags, int mode) {
     }
   }
   panic("this file not exist:%s",filename);
-  //assert(0);
   return -1;
 }
 
@@ -59,11 +58,11 @@ ssize_t fs_read(int fd, void *buf, size_t len){
     Log("arg invalid:fd<3");
     return 0;
   }
-  if(fd == FD_EVENTS) {
+  else if(fd == FD_EVENTS) {
     return events_read(buf, len);
   }
 
-  if(fd == FD_DISPINFO){
+  else if(fd == FD_DISPINFO){
     dispinfo_read(buf, file_table[fd].open_offset, len);
     //file_table[fd].open_offset += len;
   }
@@ -77,12 +76,12 @@ ssize_t fs_read(int fd, void *buf, size_t len){
 ssize_t fs_write(int fd, const void *buf, size_t len){
   assert(fd >= 0 && fd < NR_FILES);
   ssize_t fs_size = fs_filesz(fd);
-  if(fd < 3 || fd == FD_DISPINFO) {
+  if(fd < 3 || fd >= FD_DISPINFO) {
     Log("arg invalid:fd<3");
     return 0;
   }
 
-  if(fd == FD_FB){
+  else if(fd == FD_FB){
     fb_write(buf, file_table[fd].open_offset, len);
   }
   else {
@@ -107,6 +106,7 @@ off_t fs_lseek(int fd, off_t offset, int whence) {
         file_table[fd].open_offset = offset;
         return file_table[fd].open_offset;
       }
+
     case SEEK_END:
       file_table[fd].open_offset = file_table[fd].size + offset;
       return file_table[fd].open_offset;
