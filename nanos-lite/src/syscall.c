@@ -74,7 +74,9 @@ _RegSet* do_syscall(_RegSet *r) {
   a[0] = SYSCALL_ARG1(r);
   Log("enter syscall");
   switch (a[0]) {
-    case SYS_none: return sys_none(r);
+    case SYS_none: 
+      Log("enter none");
+      return sys_none(r);
     case SYS_exit: return sys_exit(r);
     case SYS_write:
       Log("enter write");
