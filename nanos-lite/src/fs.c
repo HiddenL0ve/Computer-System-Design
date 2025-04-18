@@ -54,7 +54,7 @@ ssize_t fs_read(int fd, void *buf, size_t len){
   ssize_t fs_size = fs_filesz(fd);
 	if (file_table[fd].open_offset + len > fs_size)
 		len = fs_size - file_table[fd].open_offset;
-  if(fd < 3 || fd >= FD_FB) {
+  if(fd < 3 || fd == FD_FB) {
     Log("arg invalid:fd<3");
     return 0;
   }
@@ -76,7 +76,7 @@ ssize_t fs_read(int fd, void *buf, size_t len){
 ssize_t fs_write(int fd, const void *buf, size_t len){
   assert(fd >= 0 && fd < NR_FILES);
   ssize_t fs_size = fs_filesz(fd);
-  if(fd < 3 || fd >= FD_DISPINFO) {
+  if(fd < 3 || fd == FD_DISPINFO) {
     Log("arg invalid:fd<3");
     return 0;
   }
