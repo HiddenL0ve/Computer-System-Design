@@ -54,7 +54,7 @@ ssize_t fs_read(int fd, void *buf, size_t len){
   ssize_t fs_size = fs_filesz(fd);
   if (file_table[fd].open_offset + len > fs_size)
     len = fs_size - file_table[fd].open_offset;
-  if(fd < 3) {
+  if(fd < 3 || fd == FD_FB) {
     Log("arg invalid:fd<3");
     return 0;
   }
