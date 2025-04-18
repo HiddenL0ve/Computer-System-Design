@@ -78,7 +78,7 @@ _RegSet* do_syscall(_RegSet *r) {
       Log("enter none");
       return sys_none(r);
     case SYS_exit: 
-      Log("enter none");
+      Log("enter exit");
       return sys_exit(r);
     case SYS_write:
       Log("enter write");
