@@ -27,6 +27,7 @@ static inline _RegSet* sys_write(_RegSet *r){
   }
   
   else {
+Log("fd=%d",fd);
     SYSCALL_ARG1(r) = fs_write(fd,buf,len);
     //panic("Unhandled fd=%d in sys_write()", fd);
   }
