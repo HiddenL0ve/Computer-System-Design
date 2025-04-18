@@ -46,6 +46,7 @@ static inline _RegSet* sys_open(_RegSet *r) {
   SYSCALL_ARG1(r) = fs_open(pathname,flags,mode);
   return NULL;
 }
+
 static inline _RegSet* sys_read(_RegSet *r) {
   int fd = (int)SYSCALL_ARG2(r);
   char *buf = (char *)SYSCALL_ARG3(r);
