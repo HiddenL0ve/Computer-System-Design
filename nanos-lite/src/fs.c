@@ -74,14 +74,16 @@ ssize_t fs_read(int fd, void *buf, size_t len){
 }
 
 ssize_t fs_write(int fd, const void *buf, size_t len){
-  ssize_t fs_size = fs_filesz(fd);
 
-  if(file_table[fd].open_offset + len > fs_size){
-    len = fs_size - file_table[fd].open_offset;
-  }
-  ramdisk_write(buf, file_table[fd].disk_offset + file_table[fd].open_offset, len);
+  ssize_t fs_size = fs_filesz(fd);
+  int n = fs_size - file_table[fd].open_offset;
+if(n>len)
+ n=len;
+ramdisk_write(buf, file_table[fd].disk_offset + file_table[fd].open_offset, len);
+file_table[fd].open_offset += len;
+
   Log("enter fwrite");
-  file_table[fd].open_offset += len;
+
   return len;
 }
 
