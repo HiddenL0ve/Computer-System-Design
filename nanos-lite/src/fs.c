@@ -69,6 +69,7 @@ ssize_t fs_read(int fd, void *buf, size_t len){
   else {
     ramdisk_read(buf, file_table[fd].disk_offset + file_table[fd].open_offset, len);
   }
+Log("enter fread");
   file_table[fd].open_offset += len;
   return len;
 }
@@ -89,11 +90,13 @@ ssize_t fs_write(int fd, const void *buf, size_t len){
       len = fs_size - file_table[fd].open_offset;
     ramdisk_write(buf, file_table[fd].disk_offset + file_table[fd].open_offset, len);
   }
+Log("enter fwrite");
   file_table[fd].open_offset += len;
   return len;
 }
 
 off_t fs_lseek(int fd, off_t offset, int whence) {
+Log("enter fseek");
   switch(whence) {
     case SEEK_SET:
       if (offset >= 0 && offset <= file_table[fd].size){
