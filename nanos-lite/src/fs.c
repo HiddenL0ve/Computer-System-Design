@@ -50,7 +50,7 @@ int fs_open(const char*filename, int flags, int mode) {
 }
 
 ssize_t fs_read(int fd, void *buf, size_t len){
-  assert(fd >= 0 && fd < NR_FILES);
+  //assert(fd >= 0 && fd < NR_FILES);
   ssize_t fs_size = fs_filesz(fd);
 	if (file_table[fd].open_offset + len > fs_size)
 		len = fs_size - file_table[fd].open_offset;
