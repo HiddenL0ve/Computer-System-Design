@@ -52,12 +52,9 @@ int fs_open(const char*filename, int flags, int mode) {
 ssize_t fs_read(int fd, void *buf, size_t len){
   //assert(fd >= 0 && fd < NR_FILES);
   ssize_t fs_size = fs_filesz(fd);
-	if (file_table[fd].open_offset + len > fs_size)
-		len = fs_size - file_table[fd].open_offset;
-  if(fd < 3 || fd >= FD_FB) {
-    Log("arg invalid:fd<3");
-    return 0;
-  }
+  if (file_table[fd].open_offset + len > fs_size)
+    len = fs_size - file_table[fd].open_offset;
+  
   else if(fd == FD_EVENTS) {
     return events_read(buf, len);
   }
@@ -76,12 +73,9 @@ ssize_t fs_read(int fd, void *buf, size_t len){
 ssize_t fs_write(int fd, const void *buf, size_t len){
   assert(fd >= 0 && fd < NR_FILES);
   ssize_t fs_size = fs_filesz(fd);
-  if(fd < 3) {
-    Log("arg invalid:fd<3");
-    return 0;
-  }
+  
 
-  else if(fd == FD_FB){
+  if(fd == FD_FB){
     fb_write(buf, file_table[fd].open_offset, len);
   }
   else {
