@@ -83,7 +83,9 @@ _RegSet* do_syscall(_RegSet *r) {
     case SYS_open:return sys_open(r);
     case SYS_read:return sys_read(r);
     case SYS_close:return sys_close(r);
-    case SYS_lseek:return sys_lseek(r);
+    case SYS_lseek:
+      Log("enter lseek");
+      return sys_lseek(r);
 
     default: panic("Unhandled syscall ID = %d", a[0]);
   }
