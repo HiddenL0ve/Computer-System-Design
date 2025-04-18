@@ -52,9 +52,9 @@ int fs_open(const char*filename, int flags, int mode) {
 ssize_t fs_read(int fd, void *buf, size_t len){
   //assert(fd >= 0 && fd < NR_FILES);
   ssize_t fs_size = fs_filesz(fd);
-  if (file_table[fd].open_offset + len > fs_size)
-    len = fs_size - file_table[fd].open_offset;
-  if(fd < 3 || fd == FD_FB) {
+	if (file_table[fd].open_offset + len > fs_size)
+		len = fs_size - file_table[fd].open_offset;
+  if(fd < 3 || fd >= FD_FB) {
     Log("arg invalid:fd<3");
     return 0;
   }
@@ -76,7 +76,7 @@ ssize_t fs_read(int fd, void *buf, size_t len){
 ssize_t fs_write(int fd, const void *buf, size_t len){
   assert(fd >= 0 && fd < NR_FILES);
   ssize_t fs_size = fs_filesz(fd);
-  if(fd < 3 || fd == FD_FB) {
+  if(fd < 3 || fd >= FD_DISPINFO) {
     Log("arg invalid:fd<3");
     return 0;
   }
@@ -94,27 +94,26 @@ ssize_t fs_write(int fd, const void *buf, size_t len){
 }
 
 off_t fs_lseek(int fd, off_t offset, int whence) {
-	off_t result = -1;
-	switch(whence) {
-		case SEEK_SET:
-			if (offset >= 0 && offset <= file_table[fd].size) {
-				file_table[fd].open_offset = offset;
-				result = file_table[fd].open_offset;
-			}
-			break;
-		case SEEK_CUR:
-			if ((offset + file_table[fd].open_offset >= 0) && (offset + file_table[fd].open_offset <= file_table[fd].size)) {
-				file_table[fd].open_offset += offset;
-				result = file_table[fd].open_offset;
-			}
-			break;
-		case SEEK_END:
-			file_table[fd].open_offset = file_table[fd].size + offset;
-			result = file_table[fd].open_offset;
-			break;
-	}
-	Log("Seek file [%d] to %d", fd, result);
-	return result;
+  switch(whence) {
+    case SEEK_SET:
+      if (offset >= 0 && offset <= file_table[fd].size){
+        file_table[fd].open_offset = offset;
+        return file_table[fd].open_offset;
+      }
+
+    case SEEK_CUR:
+      if ((offset + file_table[fd].open_offset >= 0) && (offset + file_table[fd].open_offset <= file_table[fd].size)){
+        file_table[fd].open_offset = offset;
+        return file_table[fd].open_offset;
+      }
+
+    case SEEK_END:
+      file_table[fd].open_offset = file_table[fd].size + offset;
+      return file_table[fd].open_offset;
+    default:
+      panic("Unhandled whence ID = %d", whence);
+      return -1;
+    }
 }
 
 int fs_close(int fd) {
