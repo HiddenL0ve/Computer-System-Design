@@ -86,6 +86,7 @@ _RegSet* do_syscall(_RegSet *r) {
       Log("enter write");
       return sys_write(r);
     case SYS_brk:
+Log("w");
       SYSCALL_ARG1(r) = sys_brk(a[1]);
       break;
     case SYS_open:
