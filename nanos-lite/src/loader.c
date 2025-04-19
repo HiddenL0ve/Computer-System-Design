@@ -20,5 +20,6 @@ uintptr_t loader(_Protect *as, const char *filename) {
   Log("filename=%s,fd=%d",filename,fd);
   fs_read(fd, DEFAULT_ENTRY, fs_filesz(fd));
   fs_close(fd);
+Log("enter w");
   return (uintptr_t)DEFAULT_ENTRY;
 }
