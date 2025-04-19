@@ -31,7 +31,6 @@ int main() {
   init_fs();
 
   uint32_t entry = loader(NULL, "/bin/text");
-Log("enter w");
   ((void (*)(void))entry)();
 
   panic("Should not reach here");
