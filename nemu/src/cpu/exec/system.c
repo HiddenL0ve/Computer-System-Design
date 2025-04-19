@@ -2,6 +2,7 @@
 
 void diff_test_skip_qemu();
 void diff_test_skip_nemu();
+
 void raise_intr(uint8_t NO, vaddr_t ret_addr);
 
 make_EHelper(lidt) {
@@ -18,6 +19,7 @@ make_EHelper(lidt) {
   Log("idtr.limit=0x%x", cpu.idtr.limit);
   Log("idtr.base=0x%x", cpu.idtr.base);
 #endif
+
   print_asm_template1(lidt);
 }
 
@@ -38,10 +40,10 @@ make_EHelper(mov_cr2r) {
 }
 
 make_EHelper(int) {
-  // TODO();
-
+  //TODO();
   uint8_t NO = id_dest -> val & 0xff;
   raise_intr(NO, decoding.seq_eip);
+
   print_asm("int %s", id_dest->str);
 
 #ifdef DIFF_TEST
@@ -50,15 +52,11 @@ make_EHelper(int) {
 }
 
 make_EHelper(iret) {
-  // TODO();
-  rtl_pop(&cpu.eip);
+  //TODO();
+  rtl_pop(&decoding.jmp_eip);
+  decoding.is_jmp = 1;
   rtl_pop(&cpu.cs);
-  rtl_pop(&t0);
-  memcpy(&cpu.eflags, &t0, sizeof(cpu.eflags));
-
-  decoding.jmp_eip = 1;
-  decoding.seq_eip = cpu.eip;
-
+  rtl_pop(&cpu.eflags.val);
 
   print_asm("iret");
 }
@@ -67,8 +65,9 @@ uint32_t pio_read(ioaddr_t, int);
 void pio_write(ioaddr_t, int, uint32_t);
 
 make_EHelper(in) {
-  rtl_li(&t0, pio_read(id_src->val, id_dest->width));
-  operand_write(id_dest, &t0);
+  // TODO();
+  t1 = pio_read(id_src->val,id_dest->width);
+  operand_write(id_dest,&t1);
 
   print_asm_template2(in);
 
@@ -78,7 +77,8 @@ make_EHelper(in) {
 }
 
 make_EHelper(out) {
-  pio_write(id_dest->val, id_src->width, id_src->val);
+  // TODO();
+  pio_write(id_dest->val,id_dest->width,id_src->val);
 
   print_asm_template2(out);
 
@@ -86,3 +86,4 @@ make_EHelper(out) {
   diff_test_skip_qemu();
 #endif
 }
+
