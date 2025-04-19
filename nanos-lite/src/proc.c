@@ -1,5 +1,5 @@
 #include "proc.h"
-#include "common.h"
+
 #define MAX_NR_PROC 4
 
 static PCB pcb[MAX_NR_PROC];
@@ -13,7 +13,7 @@ void load_prog(const char *filename) {
   _protect(&pcb[i].as);
 
   uintptr_t entry = loader(&pcb[i].as, filename);
-Log("enter w");
+
   // TODO: remove the following three lines after you have implemented _umake()
   _switch(&pcb[i].as);
 
@@ -24,7 +24,6 @@ Log("enter w");
   stack.end = stack.start + sizeof(pcb[i].stack);
 
   pcb[i].tf = _umake(&pcb[i].as, stack, stack, (void *)entry, NULL, NULL);
-Log("enter w");
 }
 
 _RegSet* schedule(_RegSet *prev) {
