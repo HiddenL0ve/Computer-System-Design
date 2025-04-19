@@ -1,5 +1,5 @@
 #include "proc.h"
-
+#include "common.h"
 #define MAX_NR_PROC 4
 
 static PCB pcb[MAX_NR_PROC];
@@ -24,6 +24,7 @@ Log("enter w");
   stack.end = stack.start + sizeof(pcb[i].stack);
 
   pcb[i].tf = _umake(&pcb[i].as, stack, stack, (void *)entry, NULL, NULL);
+Log("enter w");
 }
 
 _RegSet* schedule(_RegSet *prev) {
