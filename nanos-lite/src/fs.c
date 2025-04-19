@@ -86,7 +86,7 @@ ssize_t fs_read(int fd, void *buf, size_t len) {
 			ramdisk_read(buf, file_table[fd].disk_offset + file_table[fd].open_offset, len);
 			// Log("Read file [%d] start from %d with length %d", fd, file_table[fd].open_offset, len);
 			file_table[fd].open_offset += len;
-Log("enter fsread");
+Log("enter w");
 			break;
 	}
 	return len;
