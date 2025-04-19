@@ -34,9 +34,8 @@ static inline _RegSet* sys_write(_RegSet *r){
   return NULL;
 }
 
-static inline _RegSet* sys_brk(_RegSet *r) {
-  SYSCALL_ARG1(r) = 0;
-  return NULL;
+int sys_brk(int addr) {
+  return 0;
 }
 
 static inline _RegSet* sys_open(_RegSet *r) {
@@ -72,6 +71,9 @@ static inline _RegSet* sys_close(_RegSet *r) {
 _RegSet* do_syscall(_RegSet *r) {
   uintptr_t a[4];
   a[0] = SYSCALL_ARG1(r);
+  a[1] = SYSCALL_ARG2(r);
+  a[2] = SYSCALL_ARG3(r);
+  a[3] = SYSCALL_ARG4(r);
   //Log("enter syscall");
   switch (a[0]) {
     case SYS_none: 
@@ -84,8 +86,8 @@ _RegSet* do_syscall(_RegSet *r) {
       Log("enter write");
       return sys_write(r);
     case SYS_brk:
-      Log("enter brk");
-      return sys_brk(r);
+      SYSCALL_ARG1(r) = sys_brk(a[1]);
+      break;
     case SYS_open:
       Log("enter open");
       return sys_open(r);
