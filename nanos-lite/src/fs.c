@@ -29,31 +29,6 @@ extern void fb_write(const void *buf, off_t offset, size_t len);
 extern size_t events_read(void *, size_t);
 extern void dispinfo_read(void *, off_t, size_t);
 
-size_t fs_fliesz(int fd) {
-  assert(fd >= 0 && fd < NR_FILES);
-  return file_table[fd].size;
-}
-
-off_t disk_offset(int fd){
-	assert(fd >= 0 && fd < NR_FILES);
-	return file_table[fd].disk_offset;
-}
-
-off_t get_open_offset(int fd){
-	assert(fd >= 0 && fd < NR_FILES);
-	return file_table[fd].open_offset;
-}
-
-void set_open_offset(int fd,off_t n){
-	assert(fd >= 0 && fd < NR_FILES);
-	assert(n >= 0);
-	if(n > file_table[fd].size) {
-		n = file_table[fd].size;
-	}
-	file_table[fd].open_offset = n;
-}
-
-
 void init_fs() {
   // TODO: initialize the size of /dev/fb
   file_table[FD_FB].size = _screen.height * _screen.width * 4;
@@ -98,25 +73,20 @@ ssize_t fs_read(int fd, void *buf, size_t len){
   return len;
 }
 
-extern void fb_write(const void *buf, off_t offset, size_t len);
-ssize_t fs_write(int fd, void *buf, size_t len){
-  assert(fd >= 0 && fd < NR_FILES);
-  if(fd < 3 || fd == FD_DISPINFO) {
-    Log("arg invalid:fd<3");
-    return 0;
-  }
-  int n = fs_fliesz(fd) - get_open_offset(fd);
-  if(n > len) {
-    n = len;
-  }
+ssize_t fs_write(int fd, const void *buf, size_t len){
+  ssize_t fs_size = fs_filesz(fd);
+
   if(fd == FD_FB){
-    fb_write(buf, get_open_offset(fd), n);
+    fb_write(buf, file_table[fd].open_offset, len);
   }
   else {
-    ramdisk_write(buf, disk_offset(fd) + get_open_offset(fd), n);
+    if(file_table[fd].open_offset + len > fs_size)
+      len = fs_size - file_table[fd].open_offset;
+    ramdisk_write(buf, file_table[fd].disk_offset + file_table[fd].open_offset, len);
   }
-  set_open_offset(fd, get_open_offset(fd) + n);
-  return n;
+Log("enter fwrite");
+  file_table[fd].open_offset += len;
+  return len;
 }
 
 off_t fs_lseek(int fd, off_t offset, int whence) {
