@@ -48,29 +48,51 @@ int fs_open(const char*filename, int flags, int mode) {
   return -1;
 }
 
+size_t fs_fliesz(int fd) {
+  assert(fd >= 0 && fd < NR_FILES);
+  return file_table[fd].size;
+}
+
+off_t disk_offset(int fd){
+	assert(fd >= 0 && fd < NR_FILES);
+	return file_table[fd].disk_offset;
+}
+
+off_t get_open_offset(int fd){
+	assert(fd >= 0 && fd < NR_FILES);
+	return file_table[fd].open_offset;
+}
+
+void set_open_offset(int fd,off_t n){
+	assert(fd >= 0 && fd < NR_FILES);
+	assert(n >= 0);
+	if(n > file_table[fd].size) {
+		n = file_table[fd].size;
+	}
+	file_table[fd].open_offset = n;
+}
+
 ssize_t fs_read(int fd, void *buf, size_t len){
-  //assert(fd >= 0 && fd < NR_FILES);
-  ssize_t fs_size = fs_filesz(fd);
-	if (file_table[fd].open_offset + len > fs_size)
-		len = fs_size - file_table[fd].open_offset;
+  assert(fd >= 0 && fd < NR_FILES);
   if(fd < 3 || fd == FD_FB) {
     Log("arg invalid:fd<3");
     return 0;
   }
-  else if(fd == FD_EVENTS) {
+  if(fd == FD_EVENTS) {
     return events_read(buf, len);
   }
-
-  else if(fd == FD_DISPINFO){
-    dispinfo_read(buf, file_table[fd].open_offset, len);
-    //file_table[fd].open_offset += len;
+  int n = fs_fliesz(fd) - get_open_offset(fd);
+  if(n > len) {
+    n = len;
+  }
+  if(fd == FD_DISPINFO){
+    dispinfo_read(buf, get_open_offset(fd), n);
   }
   else {
-    ramdisk_read(buf, file_table[fd].disk_offset + file_table[fd].open_offset, len);
+    ramdisk_read(buf, disk_offset(fd) + get_open_offset(fd), n);
   }
-//Log("enter fread");
-  file_table[fd].open_offset += len;
-  return len;
+  set_open_offset(fd, get_open_offset(fd) + n);
+  return n;
 }
 
 ssize_t fs_write(int fd, const void *buf, size_t len){
