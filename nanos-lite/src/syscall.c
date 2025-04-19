@@ -36,7 +36,6 @@ static inline _RegSet* sys_write(_RegSet *r){
 
 static inline _RegSet* sys_brk(_RegSet *r) {
   SYSCALL_ARG1(r) = 0;
-Log("enter w");
   return NULL;
 }
 
@@ -97,7 +96,7 @@ _RegSet* do_syscall(_RegSet *r) {
     case SYS_lseek:
       Log("enter lseek");
       return sys_lseek(r);
-
+Log("enter w");
     default: panic("Unhandled syscall ID = %d", a[0]);
   }
 
