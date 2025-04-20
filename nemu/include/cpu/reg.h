@@ -82,6 +82,12 @@ typedef struct
     };
   } eflags;
 
+  struct IDTR
+  {
+    uint32_t base;
+    uint16_t limit; 
+  } idtr;
+
   rtlreg_t cs;
   rtlreg_t es; 
   rtlreg_t ds;
