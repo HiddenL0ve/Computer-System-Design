@@ -215,5 +215,29 @@ static inline void rtl_update_ZFSF(const rtlreg_t* result, int width) {
   rtl_update_SF(result, width);
 }
 
+static inline void rtl_store_cr(int r,const rtlreg_t* src){
+  switch (r){
+    case 0:
+      cpu.CR0=*src;
+      break;
+    case 3:
+      cpu.CR3=*src;
+      break;
+    default:assert(0);
+  }
+}
+
+static inline void rtl_load_cr(rtlreg_t* dest,int r){
+  switch (r){
+    case 0:
+      *dest=cpu.CR0;
+      break;
+    case 3:
+      *dest=cpu.CR3;
+      break;
+    default:assert(0);
+  }
+}
+
 #endif
 
