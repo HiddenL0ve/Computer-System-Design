@@ -42,16 +42,18 @@ paddr_t page_translate(vaddr_t addr, bool iswrite) {
  CR0 cr0 = (CR0)cpu.CR0;
  if(cr0.paging && cr0.protect_enable) {
    CR3 crs = (CR3)cpu.CR3;
-  
+   // set PDE
    PDE *pgdirs = (PDE*)PTE_ADDR(crs.val);
    PDE pde = (PDE)paddr_read((uint32_t)(pgdirs + PDX(addr)), 4);
+   Assert(pde.present, "addr=0x%x", addr);
+   pde.accessed=1;
   
+   // set PTE
    PTE *ptable = (PTE*)PTE_ADDR(pde.val);
    PTE pte = (PTE)paddr_read((uint32_t)(ptable + PTX(addr)), 4);
    Assert(pte.present, "addr=0x%x", addr);
- 
-   pde.accessed=1;
    pte.accessed=1;
+
    if(iswrite) {
     pte.dirty=1;
    }
