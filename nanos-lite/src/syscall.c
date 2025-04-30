@@ -3,6 +3,7 @@
 #include "fs.h"
 
 extern void _halt(int);
+extern int mm_brk(uint32_t new_brk);
 
 static inline _RegSet* sys_none(_RegSet *r){
   SYSCALL_ARG1(r) = 1;
@@ -35,8 +36,9 @@ static inline _RegSet* sys_write(_RegSet *r){
 }
 
 static inline _RegSet* sys_brk(_RegSet *r) {
-  SYSCALL_ARG1(r) = 0;
-  return r;
+  int addr = (int)SYSCALL_ARG2(r);
+  SYSCALL_ARG1(r) = mm_brk(addr);
+  return NULL;
 }
 
 static inline _RegSet* sys_open(_RegSet *r) {
