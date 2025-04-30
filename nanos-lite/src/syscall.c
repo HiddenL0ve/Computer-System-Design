@@ -38,7 +38,7 @@ static inline _RegSet* sys_write(_RegSet *r){
 static inline _RegSet* sys_brk(_RegSet *r) {
   int addr = (int)SYSCALL_ARG2(r);
   SYSCALL_ARG1(r) = mm_brk(addr);
-  return NULL;
+  return r;
 }
 
 static inline _RegSet* sys_open(_RegSet *r) {
