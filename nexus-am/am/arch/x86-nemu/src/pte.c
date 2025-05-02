@@ -100,5 +100,5 @@ _RegSet *_umake(_Protect *p, _Area ustack, _Area kstack, void *entry, char *cons
   void *tf_addr=(void*)(ustack.end-16-sizeof(tf));
   memcpy(tf_addr,(void*)&tf,sizeof(tf));
   return (_RegSet*)tf_addr;
-  return NULL;
+  //return NULL;
 }
