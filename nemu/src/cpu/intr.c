@@ -7,15 +7,13 @@ void raise_intr(uint8_t NO, vaddr_t ret_addr) {
    */
 
   //TODO();
-  rtl_push(&cpu.eflags.val);
-
-  cpu.eflags.IF = 0;
-
-  rtl_push(&cpu.cs);
-  rtl_push(&ret_addr);
-  
-  rtl_li(&t0,vaddr_read(cpu.idtr.base+8*NO,4));
-  rtl_li(&t1,vaddr_read(cpu.idtr.base+8*NO+4,4));
+  memcpy(&t1,&cpu.eflags,sizeof(cpu.eflags));
+  rtl_li(&t0,t1);
+  rtl_push(&t0);//eflags
+  cpu.eflags.IF=0;
+  rtl_push(&cpu.cs);//cs
+  rtl_li(&t0,ret_addr);
+  rtl_push(&t0);//eip
 
   if((t1 & 0x00008000) == 0)
       assert(0);
