@@ -15,11 +15,12 @@ size_t events_read(void *buf, size_t len) {
 		key ^= 0x8000;
 		down = true;
 	}
-  if(key != _KEY_NONE) {
-    sprintf(buf, "%s %s\n", down ? "kd" : "ku", keyname[key]);
-  }
+  if(key == _KEY_NONE) {
+    uint32_t ut = _uptime();
+    sprintf(buf, "t %d\n", ut);
+  } 
   else {
-    unsigned long time = _uptime();
+    
     sprintf(buf, "t %d\n", time);
     if(down && key == _KEY_F12) {
       extern void game_change();
