@@ -7,6 +7,7 @@ void raise_intr(uint8_t NO, vaddr_t ret_addr) {
    */
 
   //TODO();
+Log("enter 3");
   memcpy(&t1,&cpu.eflags,sizeof(cpu.eflags));
   rtl_li(&t0,t1);
   rtl_push(&t0);//eflags
@@ -26,5 +27,6 @@ void raise_intr(uint8_t NO, vaddr_t ret_addr) {
 }
 
 void dev_raise_intr() {
-  cpu.INTR = 1;
+Log("enter dev");
+  cpu.INTR = true;
 }
