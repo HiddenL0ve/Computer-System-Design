@@ -95,7 +95,7 @@ _RegSet *_umake(_Protect *p, _Area ustack, _Area kstack, void *entry, char *cons
 
   _RegSet tf;
   tf.cs=0;
-  tf.eflags=0x022 | FL_IF;
+  tf.eflags=0x02;
   tf.eip=(uintptr_t)entry;
   void *tf_addr=(void*)(ustack.end-16-sizeof(tf));
   memcpy(tf_addr,(void*)&tf,sizeof(tf));
