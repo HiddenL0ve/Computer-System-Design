@@ -256,7 +256,7 @@ void exec_wrapper(bool print_flag) {
   difftest_step(eip);
 #endif
 
-  if(1){
+  if(cpu.INTR & cpu.eflags.IF){
     cpu.INTR = false;
     raise_intr(TIME_IRQ, cpu.eip);
     update_eip();
