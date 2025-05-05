@@ -255,7 +255,6 @@ void exec_wrapper(bool print_flag) {
   void difftest_step(uint32_t);
   difftest_step(eip);
 #endif
-Log("enter 1");
   if(cpu.INTR & cpu.eflags.IF){
 Log("enter 2");
     cpu.INTR = false;
