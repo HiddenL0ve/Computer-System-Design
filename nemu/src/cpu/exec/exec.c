@@ -257,7 +257,7 @@ void exec_wrapper(bool print_flag) {
 #endif
 
   if(cpu.INTR & cpu.eflags.IF){
-if(cpu.INTR){Log("enter 1");}
+if(cpu.INTR || cpu.eflags.IF){Log("enter 1");}
 else Log("enter 2");
     cpu.INTR = false;
     raise_intr(TIME_IRQ, cpu.eip);
