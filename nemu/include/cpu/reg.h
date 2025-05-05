@@ -44,44 +44,53 @@ enum
  * For more details about the register encoding scheme, see i386 manual.
  */
 
-typedef struct {
-  union {
-   union{
-    uint32_t _32;
-    uint16_t _16;
-    uint8_t _8[2];
-  } gpr[8];
+typedef struct
+{
+  union
+  {
+    union
+    {
+      uint32_t _32;
+      uint16_t _16;
+      uint8_t _8[2];
+    } gpr[8];
 
-  /* Do NOT change the order of the GPRs' definitions. */
+    /* Do NOT change the order of the GPRs' definitions. */
 
-  /* In NEMU, rtlreg_t is exactly uint32_t. This makes RTL instructions
-   * in PA2 able to directly access these registers.
-   */
- struct{
-  rtlreg_t eax, ecx, edx, ebx, esp, ebp, esi, edi;
-  };
- };
-  vaddr_t eip;
-  union{
-    struct{
-      uint32_t CF : 1;  // 进/借位置1
-      uint32_t    : 1;
-      uint32_t    : 4;
-      uint32_t ZF : 1;  // 运算结果为0置1
-      uint32_t SF : 1;  // 运算结果为负置1
-      uint32_t    : 1;
-      uint32_t IF : 1;  // 置1时允许响应中断请求
-      uint32_t    : 1;
-      uint32_t OF : 1;  // 运算结果溢出置1
-      uint32_t    : 20;
+    /* In NEMU, rtlreg_t is exactly uint32_t. This makes RTL instructions
+     * in PA2 able to directly access these registers.
+     */
+    struct
+    {
+      rtlreg_t eax, ecx, edx, ebx, esp, ebp, esi, edi;
     };
+  };
+  vaddr_t eip;
+
+  union {
     uint32_t val;
-  }eflags;
-  struct{
+    struct {
+      uint32_t CF:1;
+      unsigned:5;
+      uint32_t ZF:1;
+      uint32_t SF:1;
+      unsigned:1;
+      uint32_t IF:1;
+      unsigned:1;
+      uint32_t OF:1;
+      unsigned:20;
+    };
+  } eflags;
+
+  struct IDTR
+  {
     uint32_t base;
-    uint16_t limit;
-  }idtr;
-  uint32_t cs;
+    uint16_t limit; 
+  } idtr;
+
+  rtlreg_t cs;
+  rtlreg_t es; 
+  rtlreg_t ds;
   uint32_t CR0;
   uint32_t CR3;
   bool INTR;
