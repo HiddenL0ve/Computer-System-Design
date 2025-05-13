@@ -9,24 +9,27 @@ FLOAT F_mul_F(FLOAT a, FLOAT b) {
 }
 
 FLOAT F_div_F(FLOAT a, FLOAT b) {
-  assert(b != 0);
-  FLOAT x = Fabs(a);
-  FLOAT y = Fabs(b);
-  FLOAT ret = x / y;
-  x = x % y;
+    FLOAT dividend = Fabs(a);
+    FLOAT divisor = Fabs(b);
+    // 执行浮点数的除法操作，得到初始结果
+    FLOAT res = dividend / divisor;
+    dividend = dividend % divisor;
 
-  for (int i = 0; i < 16; i++) {
-    x <<= 1;
-    ret <<= 1;
-    if (x >= y) {
-      x -= y;
-      ret++;
+    // 长除法
+    for (int i = 0; i < 16; i++) {
+        dividend <<= 1;  // 将被除数左移1位
+        res <<= 1;  // 将结果左移1位
+        // 如果被除数大于等于除数
+        if (dividend >= divisor) { 
+            dividend -= divisor;
+            res++;
+        }
     }
-  }
-  if (((a ^ b) & 0x80000000) == 0x80000000) {
-    ret = -ret;
-  }
-  return ret;
+    // 如果a和b的符号不同
+    if (((a ^ b) & 0x80000000) == 0x80000000) {
+        res = -res;
+    }
+    return res;
 }
 
   union float_ {
