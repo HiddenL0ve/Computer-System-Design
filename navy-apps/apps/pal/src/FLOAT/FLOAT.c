@@ -72,10 +72,7 @@ FLOAT f2F(float a) {
 
 
 FLOAT Fabs(FLOAT a) {
-  if ((a & 0x80000000) == 0)
-    return a;
-  else
-    return -a;
+  return (a > 0) ? a : -a;
 }
 
 /* Functions below are already implemented */
