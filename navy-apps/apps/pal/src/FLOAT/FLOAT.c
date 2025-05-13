@@ -11,9 +11,9 @@ FLOAT F_mul_F(FLOAT a, FLOAT b) {
 FLOAT F_div_F(FLOAT a, FLOAT b) {
   //assert(0);
   //return 0;
-  FLOAT result = x / y;
   FLOAT x = Fabs(a);
   FLOAT y = Fabs(b);
+  FLOAT result = x / y;
   x = x % y;
 
   for (int i = 0; i < 16; i++) {
