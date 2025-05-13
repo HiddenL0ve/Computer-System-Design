@@ -70,6 +70,14 @@ FLOAT f2F(float a) {
   return (f->sign)?res:-res;
 }
 
+
+FLOAT Fabs(FLOAT a) {
+  if ((a & 0x80000000) == 0)
+    return a;
+  else
+    return -a;
+}
+
 /* Functions below are already implemented */
 
 FLOAT Fsqrt(FLOAT x) {
