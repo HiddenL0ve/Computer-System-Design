@@ -3,8 +3,9 @@
 #include <assert.h>
 
 FLOAT F_mul_F(FLOAT a, FLOAT b) {
-  assert(0);
-  return 0;
+  //assert(0);
+  //return 0;
+  return (a * b) >> 16;
 }
 
 FLOAT F_div_F(FLOAT a, FLOAT b) {
@@ -22,9 +23,27 @@ FLOAT f2F(float a) {
    * stack. How do you retrieve it to another variable without
    * performing arithmetic operations on it directly?
    */
+  union float_ {
+    struct {
+      uint32_t man : 23;
+      uint32_t exp : 8;
+      uint32_t sign : 1;
+    };
+    uint32_t val;
+  };
 
-  assert(0);
-  return 0;
+  union float_ f;
+  f.val = *((uint32_t*)(void*)&a);
+
+  int exp = f.exp - 127;
+  FLOAT result = 0;
+  int mov = 7 - exp;
+  if (mov >= 0)
+    result = (f.man | (1 << 23)) >> mov;
+  else
+    result = (f.man | (1 << 23)) << (-mov);
+
+  return f.sign == 0 ? result : -result;
 }
 
 FLOAT Fabs(FLOAT a) {
