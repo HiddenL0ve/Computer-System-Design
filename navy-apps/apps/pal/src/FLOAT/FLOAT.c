@@ -1,26 +1,24 @@
 #include "FLOAT.h"
 #include <stdint.h>
 #include <assert.h>
+#include <string.h>
 
 FLOAT F_mul_F(FLOAT a, FLOAT b) {
-  //assert(0);
-  //return 0;
+ // Log("mul:%x::::%x",a,b);
   return (a * b) >> 16;
 }
 
 FLOAT F_div_F(FLOAT a, FLOAT b) {
-  //assert(0);
-  //return 0;
-  FLOAT x = Fabs(a);
-  FLOAT y = Fabs(b);
-  FLOAT result = x / y;
-  x = x % y;
+  FLOAT result = Fabs(a) / Fabs(b);
+  FLOAT m = Fabs(a);
+  FLOAT n = Fabs(b);
+  m = m % n;
 
   for (int i = 0; i < 16; i++) {
-    x <<= 1;
+    m <<= 1;
     result <<= 1;
-    if (x >= y) {
-      x -= y;
+    if (m >= n) {
+      m -= n;
       result++;
     }
   }
@@ -42,44 +40,36 @@ FLOAT f2F(float a) {
    */
   union float_ {
     struct {
-      uint32_t man : 23;
-      uint32_t exp : 8;
-      uint32_t sign : 1;
+      uint32_t m : 23;
+      uint32_t e : 8;
+      uint32_t signal : 1;
     };
-    uint32_t val;
+    uint32_t value;
   };
-
   union float_ f;
-  f.val = *((uint32_t*)(void*)&a);
+  f.value = *((uint32_t*)(void*)&a);
 
-  int exp = f.exp - 127;
-  FLOAT result = 0;
-  int mov = 7 - exp;
-  if (mov >= 0)
-    result = (f.man | (1 << 23)) >> mov;
-  else
-    result = (f.man | (1 << 23)) << (-mov);
+  int e = f.e - 127;
 
-  return f.sign == 0 ? result : -result;
-}
-
-FLOAT Fabs(FLOAT a) {
-  if ((a & 0x80000000) == 0)
-    return a;
-  else
-    return -a;
+  FLOAT result;
+  if (e <= 7) {
+    result = (f.m | (1 << 23)) >> 7 - e;
+  }
+  else {
+    result = (f.m | (1 << 23)) << (e - 7);
+  }
+  return f.signal == 0 ? result : (result|(1<<31));
 }
 
 /* Functions below are already implemented */
 
 FLOAT Fsqrt(FLOAT x) {
   FLOAT dt, t = int2F(2);
-
+  
   do {
     dt = F_div_int((F_div_F(x, t) - t), 2);
     t += dt;
   } while(Fabs(dt) > f2F(1e-4));
-
   return t;
 }
 
@@ -92,6 +82,5 @@ FLOAT Fpow(FLOAT x, FLOAT y) {
     dt = (F_div_F(x, t2) - t) / 3;
     t += dt;
   } while(Fabs(dt) > f2F(1e-4));
-
   return t;
 }
