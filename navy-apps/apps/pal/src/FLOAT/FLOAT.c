@@ -30,15 +30,12 @@ FLOAT F_div_F(FLOAT a, FLOAT b) {
   return result;
 }
 
-  union float_ {
-    struct {
-      uint32_t sign : 1;
-      uint32_t exp : 8;
-      uint32_t man : 23;
-    };
-    uint32_t val;
-  };
-
+struct _float
+{
+  uint32_t sign:1;
+  uint32_t exponent:8;
+  uint32_t mantissa:23;
+};
 FLOAT f2F(float a) {
   /* You should figure out how to convert `a' into FLOAT without
    * introducing x87 floating point instructions. Else you can
@@ -50,25 +47,27 @@ FLOAT f2F(float a) {
    * performing arithmetic operations on it directly?
    */
 
-  union float_ f;
-  f.val = *((uint32_t*)(void*)&a);
-
-  int exp = f.exp - 127;
-  FLOAT result = 0;
-  int mov = 7 - exp;
-  if (mov >= 0)
-    result = (f.man | (1 << 23)) >> mov;
-  else
-    result = (f.man | (1 << 23)) << (-mov);
-
-  return f.sign == 0 ? result : -result;
-}
-
-FLOAT Fabs(FLOAT a) {
-  if ((a & 0x80000000) == 0)
-    return a;
-  else
-    return -a;
+  //assert(0);
+  struct _float *f=(struct _float *)&a;
+  uint32_t res;
+  uint32_t man;
+  int exp;
+  
+  if((f->exponent&0xff)==0xff){
+     assert(0);
+  }else if(f->exponent|0xff==0){
+    exp= 1-127;
+    man=(f->mantissa)&0x7fffff;
+  }else{
+    exp=f->exponent-127;
+    man=(((f->mantissa)&0x7fffff)|1<<23);
+  }
+  if(exp>=7&&exp<22){
+    res=man<<(exp-7);
+  }else if(exp<7&&exp>-32){
+    res=man>>7>>-exp;
+  }
+  return (f->sign)?res:-res;
 }
 
 /* Functions below are already implemented */
