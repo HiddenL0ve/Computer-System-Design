@@ -30,6 +30,15 @@ FLOAT F_div_F(FLOAT a, FLOAT b) {
   return result;
 }
 
+  union float_ {
+    struct {
+      uint32_t man : 23;
+      uint32_t exp : 8;
+      uint32_t sign : 1;
+    };
+    uint32_t val;
+  };
+
 FLOAT f2F(float a) {
   /* You should figure out how to convert `a' into FLOAT without
    * introducing x87 floating point instructions. Else you can
@@ -40,14 +49,6 @@ FLOAT f2F(float a) {
    * stack. How do you retrieve it to another variable without
    * performing arithmetic operations on it directly?
    */
-  union float_ {
-    struct {
-      uint32_t man : 23;
-      uint32_t exp : 8;
-      uint32_t sign : 1;
-    };
-    uint32_t val;
-  };
 
   union float_ f;
   f.val = *((uint32_t*)(void*)&a);
