@@ -3,39 +3,41 @@
 #include <assert.h>
 
 FLOAT F_mul_F(FLOAT a, FLOAT b) {
-   return ((int64_t)a*(int64_t)b)>>16;
+  //assert(0);
+  //return 0;
+  return (a * b) >> 16;
 }
 
 FLOAT F_div_F(FLOAT a, FLOAT b) {
-    FLOAT dividend = Fabs(a);
-    FLOAT divisor = Fabs(b);
-    // 执行浮点数的除法操作，得到初始结果
-    FLOAT res = dividend / divisor;
-    dividend = dividend % divisor;
+  assert(b != 0);
+  FLOAT x = Fabs(a);
+  FLOAT y = Fabs(b);
+  FLOAT ret = x / y;
+  x = x % y;
 
-    // 长除法
-    for (int i = 0; i < 16; i++) {
-        dividend <<= 1;  // 将被除数左移1位
-        res <<= 1;  // 将结果左移1位
-        // 如果被除数大于等于除数
-        if (dividend >= divisor) { 
-            dividend -= divisor;
-            res++;
-        }
+  for (int i = 0; i < 16; i++) {
+    x <<= 1;
+    ret <<= 1;
+    if (x >= y) {
+      x -= y;
+      ret++;
     }
-    // 如果a和b的符号不同
-    if (((a ^ b) & 0x80000000) == 0x80000000) {
-        res = -res;
-    }
-    return res;
+  }
+  if (((a ^ b) & 0x80000000) == 0x80000000) {
+    ret = -ret;
+  }
+  return ret;
 }
 
-struct _float
-{
-  uint32_t sign:1;
-  uint32_t exponent:8;
-  uint32_t mantissa:23;
-};
+  union float_ {
+    struct {
+      uint32_t sign : 1;
+      uint32_t exp : 8;
+      uint32_t man : 23;
+    };
+    uint32_t val;
+  };
+
 FLOAT f2F(float a) {
   /* You should figure out how to convert `a' into FLOAT without
    * introducing x87 floating point instructions. Else you can
@@ -47,29 +49,19 @@ FLOAT f2F(float a) {
    * performing arithmetic operations on it directly?
    */
 
-  //assert(0);
-  struct _float *f=(struct _float *)&a;
-  uint32_t res;
-  uint32_t man;
-  int exp;
-  
-  if((f->exponent&0xff)==0xff){
-     assert(0);
-  }else if(f->exponent|0xff==0){
-    exp= 1-127;
-    man=(f->mantissa)&0x7fffff;
-  }else{
-    exp=f->exponent-127;
-    man=(((f->mantissa)&0x7fffff)|1<<23);
-  }
-  if(exp>=7&&exp<22){
-    res=man<<(exp-7);
-  }else if(exp<7&&exp>-32){
-    res=man>>7>>-exp;
-  }
-  return (f->sign)?res:-res;
-}
+  union float_ f;
+  f.val = *((uint32_t*)(void*)&a);
 
+  int exp = f.exp - 127;
+  FLOAT result = 0;
+  int mov = 7 - exp;
+  if (mov >= 0)
+    result = (f.man | (1 << 23)) >> mov;
+  else
+    result = (f.man | (1 << 23)) << (-mov);
+
+  return f.sign == 0 ? result : -result;
+}
 
 FLOAT Fabs(FLOAT a) {
   return (a > 0) ? a : -a;
