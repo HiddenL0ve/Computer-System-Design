@@ -32,9 +32,9 @@ FLOAT F_div_F(FLOAT a, FLOAT b) {
 
   union float_ {
     struct {
-      uint32_t man : 23;
-      uint32_t exp : 8;
       uint32_t sign : 1;
+      uint32_t exp : 8;
+      uint32_t man : 23;
     };
     uint32_t val;
   };
