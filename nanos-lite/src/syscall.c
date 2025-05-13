@@ -3,6 +3,7 @@
 #include "fs.h"
 
 extern void _halt(int);
+extern int mm_brk(uint32_t new_brk);
 
 static inline _RegSet* sys_none(_RegSet *r){
   SYSCALL_ARG1(r) = 1;
@@ -35,8 +36,9 @@ static inline _RegSet* sys_write(_RegSet *r){
 }
 
 static inline _RegSet* sys_brk(_RegSet *r) {
-  SYSCALL_ARG1(r) = 0;
-  return r;
+  int addr = (int)SYSCALL_ARG2(r);
+  SYSCALL_ARG1(r) = mm_brk(addr);
+  return NULL;
 }
 
 static inline _RegSet* sys_open(_RegSet *r) {
@@ -75,28 +77,20 @@ _RegSet* do_syscall(_RegSet *r) {
   //Log("enter syscall");
   switch (a[0]) {
     case SYS_none: 
-      //Log("enter none");
       return sys_none(r);
     case SYS_exit: 
-      //Log("enter exit");
       return sys_exit(r);
     case SYS_write:
-      //Log("enter write");
       return sys_write(r);
     case SYS_brk:
-      //Log("enter brk");
       return sys_brk(r);
     case SYS_open:
-      //Log("enter open");
       return sys_open(r);
     case SYS_read:
-      //Log("enter read");
       return sys_read(r);
     case SYS_close:
-      //Log("enter close");
       return sys_close(r);
     case SYS_lseek:
-      //Log("enter lseek");
       return sys_lseek(r);
     default: panic("Unhandled syscall ID = %d", a[0]);
   }

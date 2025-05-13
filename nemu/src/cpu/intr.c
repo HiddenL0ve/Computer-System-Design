@@ -7,22 +7,24 @@ void raise_intr(uint8_t NO, vaddr_t ret_addr) {
    */
 
   //TODO();
-  rtl_push(&cpu.eflags.val);
+  memcpy(&t1,&cpu.eflags,sizeof(cpu.eflags));
+  rtl_li(&t0,t1);
+  rtl_push(&t0);//eflags
+  cpu.eflags.IF=0;
+  rtl_push(&cpu.cs);//cs
+  rtl_li(&t0,ret_addr);
+  rtl_push(&t0);//eip
 
-  cpu.eflags.IF = 0;
+  vaddr_t gate_addr=cpu.idtr.base+NO*sizeof(GateDesc);
 
-  rtl_push(&cpu.cs);
-  rtl_push(&ret_addr);
+  uint32_t off_15_0=vaddr_read(gate_addr,2);
+  uint32_t off_32_16=vaddr_read(gate_addr+sizeof(GateDesc)-2,2);
+  uint32_t offset=(off_32_16<<16)+off_15_0;
   
-  rtl_li(&t0,vaddr_read(cpu.idtr.base+8*NO,4));
-  rtl_li(&t1,vaddr_read(cpu.idtr.base+8*NO+4,4));
-
-  if((t1 & 0x00008000) == 0)
-      assert(0);
-      
-  decoding.jmp_eip = (t0&0xffff)|(t1&0xffff0000);
-  decoding.is_jmp = 1;
+  decoding.is_jmp=1;
+  decoding.jmp_eip=offset;
 }
 
 void dev_raise_intr() {
+  cpu.INTR = true;
 }

@@ -147,7 +147,7 @@ opcode_entry opcode_table [512] = {
   /* 0x14 */	EMPTY, EMPTY, EMPTY, EMPTY,
   /* 0x18 */	EMPTY, EMPTY, EMPTY, EMPTY,
   /* 0x1c */	EMPTY, EMPTY, EMPTY, EMPTY,
-  /* 0x20 */	EMPTY, EMPTY, EMPTY, EMPTY,
+  /* 0x20 */	IDEX(mov_load_cr,mov), EMPTY, IDEX(mov_store_cr,mov_store_cr), EMPTY,
   /* 0x24 */	EMPTY, EMPTY, EMPTY, EMPTY,
   /* 0x28 */	EMPTY, EMPTY, EMPTY, EMPTY,
   /* 0x2c */	EMPTY, EMPTY, EMPTY, EMPTY,
@@ -223,6 +223,9 @@ static inline void update_eip(void) {
   cpu.eip = (decoding.is_jmp ? (decoding.is_jmp = 0, decoding.jmp_eip) : decoding.seq_eip);
 }
 
+extern void raise_intr(uint8_t NO, vaddr_t ret_addr);
+#define TIME_IRQ 32
+
 void exec_wrapper(bool print_flag) {
 #ifdef DEBUG
   decoding.p = decoding.asm_buf;
@@ -252,5 +255,10 @@ void exec_wrapper(bool print_flag) {
   void difftest_step(uint32_t);
   difftest_step(eip);
 #endif
-}
 
+  if(cpu.INTR & cpu.eflags.IF){
+    cpu.INTR = false;
+    raise_intr(TIME_IRQ, cpu.eip);
+    update_eip();
+  }
+}

@@ -8,19 +8,24 @@ static const char *keyname[256] __attribute__((used)) = {
   _KEYS(NAME)
 };
 
+extern void game_change();
 size_t events_read(void *buf, size_t len) {
-	int key = _read_key();
-	bool down = false;
-	if (key & 0x8000) {
-		key ^= 0x8000;
-		down = true;
-	}
-  if(key != _KEY_NONE) {
-    sprintf(buf, "%s %s\n", down ? "kd" : "ku", keyname[key]);
+  int key = _read_key();
+  bool down = false;
+  if(key & 0x8000 ) {
+    key ^= 0x8000;
+    down = true;
   }
+  if(key == _KEY_NONE) {
+    uint32_t ut = _uptime();
+    sprintf(buf, "t %d\n", ut);
+  } 
   else {
-    unsigned long time = _uptime();
-    sprintf(buf, "t %d\n", time);
+    sprintf(buf, "%s %s\n", down ? "kd" : "ku", keyname[key]);
+    if(down && key == _KEY_F12) {
+      game_change();
+      Log("key down:_KEY_F12, switch current game0!");
+    }
   }
   return strlen(buf);
 }
