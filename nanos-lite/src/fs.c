@@ -100,7 +100,7 @@ off_t fs_lseek(int fd, off_t offset, int whence) {
 
     case SEEK_CUR:
       if ((offset + file_table[fd].open_offset >= 0) && (offset + file_table[fd].open_offset <= file_table[fd].size)){
-        file_table[fd].open_offset = offset;
+        file_table[fd].open_offset += offset;
         return file_table[fd].open_offset;
       }
 
