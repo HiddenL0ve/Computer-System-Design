@@ -21,7 +21,7 @@ static inline FLOAT F_mul_int(FLOAT a, int b) {
 }
 
 static inline FLOAT F_div_int(FLOAT a, int b) {
-  F_div_F(a, int2F(b));
+  return F_div_F(a, int2F(b));
 }
 
 FLOAT f2F(float);
